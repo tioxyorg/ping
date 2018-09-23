@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+envparse = "*"
+prometheus-client = "*"
+uwsgi = "*"
+
+[dev-packages]
+pytest = "*"
+"unittest2" = "*"
+requests = "*"
+
+[requires]
+python_version = "3.7"
