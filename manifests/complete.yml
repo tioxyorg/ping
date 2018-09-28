@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spinnaker-demo
+  namespace: ping-team
+  labels:
+    app: tioxyorg-ping
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tioxyorg-ping
+  template:
+    metadata:
+      labels:
+        app: tioxyorg-ping
+    spec:
+      containers:
+      - name: ping-container
+        image: index.docker.io/tioxyorg/ping
+        ports:
+        - containerPort: 5000
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 500
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tioxyorg-ping-svc
+  namespace: ping-team
+spec:
+  selector:
+    app: tioxyorg-ping
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
