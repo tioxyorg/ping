@@ -22,7 +22,7 @@ def root():
 
 @app.route('/hello/<user>')
 def say_hello_user(user):
-    hello_message = f"Hello {user}!"
+    hello_message = f"Hello {user} NEW VERSION!"
     return hello_message, 200
 
 
