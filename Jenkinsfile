@@ -14,4 +14,8 @@ node('master'){
   stage('Echo'){
     println(env.DESIRED_TAG)
   }
+  
+  stage('Checkout'){
+    checkout scm
+  }
 }
