@@ -1,9 +1,16 @@
 node('master'){
   
   def tags = ['1', '2', '3']
-  parameters: [
-    choice(name: 'DESIRED_TAG', choices: tags, description: 'Desired tag?')
-  ]
+  
+  properties(
+    [
+        parameters(
+            [
+                choice(choices: tags, description: 'Escolha Tag',name: 'DESIRED_TAG')
+            ]
+        )
+    ]
+)
   
   stage('Echo'){
     println(env.DESIRED_TAG)
