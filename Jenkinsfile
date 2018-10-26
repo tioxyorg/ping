@@ -15,7 +15,7 @@ node('master'){
     ]
   )
 
-  if (!env.DESIRE_TAG.contains("RELOAD")){
+  if (!env.DESIRED_TAG.contains("RELOAD")){
       stage('Echo'){
         println(env.DESIRED_TAG)
       }
