@@ -1,7 +1,6 @@
 node('master'){
-  
-  def tags = ['1', '2', '3']
-  tags = sh("git tag", returnStdout: true).trim()
+
+  tags = sh(script: "git tag", returnStdout: true).trim()
   properties(
     [
         parameters(
