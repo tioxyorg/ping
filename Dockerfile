@@ -20,5 +20,5 @@ RUN python setup.py install
 EXPOSE 5000
 CMD [ "uwsgi",                      \
       "--http", "0.0.0.0:5000",     \
-      "--wsgi-file", "app.py",      \
+      "--wsgi-file", "ping.py",     \
       "--callable", "app_dispatch"  ]
