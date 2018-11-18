@@ -3,6 +3,7 @@ from prometheus_client import Counter, Summary, make_wsgi_app
 from flask import Flask, jsonify
 from envparse import env
 import os
+import socket
 
 
 APP_NAME = 'ping'
@@ -24,7 +25,7 @@ app_dispatch = DispatcherMiddleware(
 def get_labels_dict(*metric_values):
     labels = {
         "app": APP_NAME,
-        "hostname": os.environ['HOSTNAME'],
+        "hostname": socket.getfqdn(),
     }
     for i, value in enumerate(metric_values):
         labels[required_prometheus_labels[i]] = value
@@ -42,7 +43,7 @@ def say_hello_user(user):
     AMOUNT_TIMES_CALLED.labels(**labels).inc()
 
     hello_message = f"Hello {user}"
-    return hello_message, 200
+    return jsonify(message=hello_message), 200
 
 
 @app.route('/health')
@@ -51,7 +52,7 @@ def get_health():
     AMOUNT_TIMES_CALLED.labels(**labels).inc()
 
     health_message = "You should try Ping Pong!"
-    return health_message, 200
+    return jsonify(message=health_message), 200
 
 
 @app.route('/metrics')
