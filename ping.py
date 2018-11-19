@@ -1,19 +1,12 @@
 from werkzeug.wsgi import DispatcherMiddleware
-from prometheus_client import Counter, Summary, make_wsgi_app
+from prometheus_client import make_wsgi_app
 from flask import Flask, jsonify
-from envparse import env
-import os
-import socket
+import random
+import metrics
+import env
 
 
-APP_NAME = 'ping'
 app = Flask(__name__)
-
-required_prometheus_labels = ['endpoint', 'app', 'hostname']
-AMOUNT_TIMES_CALLED = Counter('amount_times_called', 'Amount of times a function was called', required_prometheus_labels)
-REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request', required_prometheus_labels)
-
-# Necessary to expose Prometheus metrics
 app_dispatch = DispatcherMiddleware(
     app,
     {
@@ -21,26 +14,31 @@ app_dispatch = DispatcherMiddleware(
     },
 )
 
-
-def get_labels_dict(*metric_values):
-    labels = {
-        "app": APP_NAME,
-        "hostname": socket.getfqdn(),
-    }
-    for i, value in enumerate(metric_values):
-        labels[required_prometheus_labels[i]] = value
-    return labels
+def is_pong(miss_appearances, hit_appearances):
+    miss = miss_appearances * [False]
+    hit = hit_appearances * [True]
+    return random.choice(miss + hit)
 
 
 @app.route('/')
 def root():
-    return "pong"
+    labels = metrics.get_labels_dict('/')
+    metrics.AMOUNT_TIMES_CALLED.labels(**labels).inc()
+
+    hit = is_pong(env.MISS_APPEARANCES, env.HIT_APPEARANCES)
+    if hit:
+        message = "pong"
+    else:
+        message = "MISS"
+
+    metrics.PONG_COUNT.labels(**labels,message=message).observe(int(hit))
+    return jsonify(message=message)
 
 
 @app.route('/hello/<user>')
 def say_hello_user(user):
-    labels = get_labels_dict(f"/hello/{user}")
-    AMOUNT_TIMES_CALLED.labels(**labels).inc()
+    labels = metrics.get_labels_dict(f"/hello/{user}")
+    metrics.AMOUNT_TIMES_CALLED.labels(**labels).inc()
 
     hello_message = f"Hello {user}"
     return jsonify(message=hello_message), 200
@@ -48,17 +46,17 @@ def say_hello_user(user):
 
 @app.route('/health')
 def get_health():
-    labels = get_labels_dict("/health")
-    AMOUNT_TIMES_CALLED.labels(**labels).inc()
+    labels = metrics.get_labels_dict("/health")
+    metrics.AMOUNT_TIMES_CALLED.labels(**labels).inc()
 
     health_message = "You should try Ping Pong!"
     return jsonify(message=health_message), 200
 
 
 @app.route('/metrics')
-def metrics():
-    labels = get_labels_dict("/metrics")
-    AMOUNT_TIMES_CALLED.labels(**labels).inc()
+def expose_metrics():
+    labels = metrics.get_labels_dict("/metrics")
+    metrics.AMOUNT_TIMES_CALLED.labels(**labels).inc()
 
 
 if __name__ == '__main__':
