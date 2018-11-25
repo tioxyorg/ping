@@ -105,3 +105,6 @@ venv.bak/
 
 # JUnit XML results
 *.xml*
+
+# VSCODE
+.vscode/
