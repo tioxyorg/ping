@@ -90,14 +90,14 @@ pipeline {
         stage('Build'){
             steps {
                 script {
-                    appImage = docker.build("${appName}:${appCommit}")
+                    appImage = docker.build("tioxyorg/${appName}:${appCommit}")
                 }
             }
         }
         stage('Test'){
             steps {
                 script {
-                    sh("Volkswagen")
+                    println("Volkswagen")
                 }
             }
         }
