@@ -77,12 +77,12 @@ pipeline {
                     def possibleTag = checkTagExistence(env.GIT_BRANCH)
                     if(possibleTag) {
                         appVersion = possibleTag
+                        appImageTags.add(possibleTag)
                     }
                     else {
                         appVersion = appCommit
                     }
                     
-                    appImageTags.add(possibleTag)
                     appImageTags.add(appCommit)
                 }
             }
