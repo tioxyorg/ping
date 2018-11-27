@@ -15,7 +15,7 @@ uwsgi --http 0.0.0.0:5000 --wsgi-file ping.py --callable app_dispatch
 ### Testing
 ------
 ```sh
-pytest -s -p no:warnings test_ping.py
+pytest -s -p no:warnings tests/
 ```
 
 ### Environment Variables
