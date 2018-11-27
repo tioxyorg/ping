@@ -54,13 +54,6 @@ pipeline {
     agent any
     
     stages {
-/*
-        stage('Checkout repository'){
-            steps {
-                checkout scm
-            }
-        }
-*/
         stage('Configuration'){
             steps {
                 script {
@@ -97,10 +90,10 @@ pipeline {
         stage('Test'){
             steps {
                 script {
-                    def testsFile = "/tmp/tests.xml"
+                    def testsFile = "test-${appVersion}.xml"
                     appImage.inside {
                         sh "pip install -e .[dev]"
-                        sh "pytest -s -p no:warnings /app/tests/ --junitxml=${testsFile}"
+                        sh "pytest -s -p no:warnings tests/ --junitxml=${testsFile}"
                         junit(
                             testResults: testsFile,
                         )
