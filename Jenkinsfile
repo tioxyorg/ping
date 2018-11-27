@@ -97,7 +97,14 @@ pipeline {
         stage('Test'){
             steps {
                 script {
-                    println("Volkswagen")
+                    def testsFile = "/tmp/tests.xml"
+                    appImage.inside {
+                        sh "pip install -e .[dev]"
+                        sh "pytest -s -p no:warnings /app/tests/ --junitxml=${testsFile}"
+                        junit(
+                            testResults: testsFile,
+                        )
+                    }
                 }
             }
         }
