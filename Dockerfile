@@ -12,7 +12,7 @@ RUN apk add --no-cache \
 
 WORKDIR /app/
 COPY . /app/
-RUN python setup.py install
+RUN pip install .
 
 # To install dev-packages from setup.py
 # RUN pip install -e .[dev]
