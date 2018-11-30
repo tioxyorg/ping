@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: {{ .Values.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.deployPort }}
+          protocol: TCP
+        resources:
+          requests:
+            memory: {{ .Values.minRAM }}
+            cpu: {{ .Values.minCPU }}
+          limits:
+            memory: {{ .Values.maxRAM }}
+            cpu: {{ .Values.maxCPU }}
+        env:
+        - name: HIT_APPEARANCES
+          value: {{ .Values.hitAppearances | quote }}
+        - name: MISS_APPEARANCES
+          value: {{ .Values.missAppearances | quote }}
