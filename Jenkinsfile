@@ -38,16 +38,29 @@ def pushImage(repository, credentialId, image, imageTags) {
     }
 }
 
+def generatePropertiesFile(fileName, fileContent, indentation) {
+    def serializedContent = readJSON(
+        text: groovy.json.JsonOutput.toJson(fileContent)
+    )
+    writeJSON(
+        file: fileName,
+        json: serializedContent,
+        pretty: indentation,
+    )
+}
+
+
 // Variables
 def blueOceanUrl
 def slackMessage
-def appName
+def appName = "ping"
 def appImage
 def appCommit
 def appVersion
 def appTag
 def appImageTags = []
-
+def propertiesFile = "buildProperties.json"
+def propertiesContent = [:]
 
 // Pipeline
 pipeline {
@@ -57,7 +70,6 @@ pipeline {
         stage('Configuration'){
             steps {
                 script {
-                    appName = "ping"
                     appCommit = resizeCommit(env.GIT_COMMIT)
                     
                     blueOceanUrl = generateBuildUrl(
@@ -67,10 +79,10 @@ pipeline {
                         env.BUILD_NUMBER,
                     )
                     
-                    def possibleTag = checkTagExistence(env.GIT_BRANCH)
-                    if(possibleTag) {
-                        appVersion = possibleTag
-                        appImageTags.add(possibleTag)
+                    appTag = checkTagExistence(env.GIT_BRANCH)
+                    if(appTag) {
+                        appVersion = appTag
+                        appImageTags.add(appTag)
                     }
                     else {
                         appVersion = appCommit
@@ -113,10 +125,31 @@ pipeline {
                 }
             }
         }
+        stage('Create properties file'){
+            steps {
+                script {
+                    propertiesContent = [
+                        "appVersion": appVersion,
+                        "appImage": "tioxyorg/${appName}:${appVersion}",
+                    ]
+
+                    def desiredIndentation = 4
+                    generatePropertiesFile(
+                        propertiesFile,
+                        propertiesContent,
+                        desiredIndentation,
+                    )
+                }
+            }
+        }
     }
     post {
         success {
             script {
+                archiveArtifacts(
+                    artifacts: propertiesFile,
+                    onlyIfSuccessful: true,
+                )
                 slackMessage = generateSlackMessage(
                     ":heavy_check_mark:",
                     "SUCCESS",
