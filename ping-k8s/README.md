@@ -19,7 +19,7 @@ tioxyorg/ping application manifests
 | **`hitAppearances`**          | Environment variable HIT_APPEARANCES                                                               	                | int       	|
 | **`missAppearances`**         | Environment variable MISS_APPEARANCES                                                                         	    | int       	|
 | **`ingressEnabled`**          | Usage of ingress to expose service                                                               	                    | bool      	|
-| **`ingressHostname`**         | Requires **ingressEnabled:true** - Ingress Hostname                                                              	    | str       	|
+| **`ingressHost`**         | Requires **ingressEnabled:true** - Ingress Hostname                                                              	    | str       	|
 
 
 ## Example](#example)
