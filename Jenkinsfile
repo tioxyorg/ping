@@ -83,6 +83,7 @@ pipeline {
                     if(appTag) {
                         appVersion = appTag
                         appImageTags.add(appTag)
+                        appImageTags.add("latest")
                     }
                     else {
                         appVersion = appCommit
@@ -129,8 +130,15 @@ pipeline {
             steps {
                 script {
                     propertiesContent = [
-                        "appVersion": appVersion,
-                        "appImage": "tioxyorg/${appName}:${appVersion}",
+                        "app": [
+                            "version": appVersion,
+                            "image": "tioxyorg/${appName}:${appVersion}",  
+                        ],
+                        "jenkins": [
+                            "buildNumber": env.BUILD_NUMBER,
+                            "jobBaseName": env.JOB_BASE_NAME,
+                            "jobName": env.JOB_NAME,
+                        ],
                     ]
 
                     def desiredIndentation = 4
