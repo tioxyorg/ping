@@ -17,4 +17,4 @@ missAppearances: 50
 
 # Ingress
 ingressEnabled: true
-ingressHost: ping.tioxy.com
+ingressHost: stg-ping.tioxy.com
