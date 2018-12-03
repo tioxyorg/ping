@@ -11,6 +11,14 @@ class TestApp(unittest.TestCase):
     def test_health_page(self):
         response = self.app.get('/health')
         self.assertEqual(response.status_code, 200)
+    
+    def test_pong(self):
+        response = self.app.get('/')
+        message = response.json['message']
+        self.assertIn(
+            message, 
+            ['pong', 'MISS'],
+        )
 
     def test_hello_message_tracer(self):
         response = self.app.get('/hello/Tracer')
