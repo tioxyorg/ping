@@ -11,7 +11,7 @@ spec:
   ports:
     - name: http
       port: {{ .Values.servicePort }}
-      targetPort: {{ .Values.servicePort }}
+      targetPort: {{ .Values.deployPort }}
       protocol: TCP
   selector:
     app: {{ .Release.Name }}
