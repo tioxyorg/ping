@@ -28,12 +28,10 @@ def root():
     hit = is_pong(env.MISS_APPEARANCES, env.HIT_APPEARANCES)
     if hit:
         message = "pong"
-        metrics.PONG_COUNT.labels(**labels,message="pong").observe(1)
-        metrics.PONG_COUNT.labels(**labels,message="MISS").observe(0)
+        metrics.PONG_REQUESTS.labels(**labels).inc()
     else:
         message = "MISS"
-        metrics.PONG_COUNT.labels(**labels,message="MISS").observe(1)
-        metrics.PONG_COUNT.labels(**labels,message="pong").observe(0)
+        metrics.MISS_REQUESTS.labels(**labels).inc()
 
     return jsonify(message=message)
 
