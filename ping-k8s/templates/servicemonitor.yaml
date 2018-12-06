@@ -5,7 +5,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Release.Name }}
-    prometheus-operator: true
+    prometheus-operator: yes
 spec:
   selector:
     matchLabels:
