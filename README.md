@@ -21,3 +21,4 @@ pytest -s -p no:warnings tests/
 ### Environment Variables
 - **HIT_APPEARANCES** (int): Amount of Hit appearances to be chosen
 - **MISS_APPEARANCES** (int): Amount of Miss appearances to be chosen
+ 
